@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+> filler.log
+tee >(awk '{ print "stdin: "$0 }' >> filler.log) | ./dde-jesu.filler 2> >(awk '{ print "stderr: "$0 }' >> filler.log) | tee >(awk '{ print "stdout: "$0 }' >> filler.log)
