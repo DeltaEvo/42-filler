@@ -6,7 +6,7 @@
 /*   By: dde-jesu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/07 13:14:22 by dde-jesu          #+#    #+#             */
-/*   Updated: 2019/01/24 14:01:07 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/01/31 17:58:37 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,41 +16,39 @@
 #include "ft/mem.h"
 #include <stdlib.h>
 
-bool		is_valid(struct s_map *map, struct s_map *piece, uint32_t pos[2],
+bool		is_valid(struct s_map *map, struct s_map *piece, int32_t pos[2],
 		char player_char)
 {
 	bool		overlap;
-	uint32_t	x;
-	uint32_t	y;
+	int32_t		x;
+	int32_t		y;
 	char		c;
 
 	overlap = false;
-	y = 0;
-	while (y < piece->height)
-	{
-		x = 0;
-		while (x < piece->width)
-		{
-			if (piece->data[y * piece->width + x] == '*'
-			&& (c = map->data[(pos[1] + y) * map->width + (pos[0] + x)]) != '.')
+	y = -1;
+	while ((x = -1) && ++y < piece->height)
+		while (++x < piece->width)
+			if (piece->data[y * piece->width + x] != '*')
+				continue ;
+			else if (!(pos[1] + y >= 0 && pos[0] + x >= 0
+			&& pos[1] + y < map->height && pos[0] + x < map->width))
+				return (false);
+			else if ((c = map->data[(pos[1] + y) * map->width + (pos[0] + x)])
+					!= '.')
 			{
 				if (!overlap && (c | 0x20) == (player_char | 0x20))
 					overlap = true;
 				else
 					return (false);
 			}
-			x++;
-		}
-		y++;
-	}
 	return (overlap);
 }
 
-uint32_t	get_distance_with_enemy(struct s_map *map, uint32_t xo, uint32_t yo,
+uint32_t	get_distance_with_enemy(struct s_map *map, int32_t xo, int32_t yo,
 		char player)
 {
-	uint32_t	x;
-	uint32_t	y;
+	int32_t		x;
+	int32_t		y;
 	uint32_t	score;
 	uint32_t	dist[2];
 
@@ -76,11 +74,11 @@ uint32_t	get_distance_with_enemy(struct s_map *map, uint32_t xo, uint32_t yo,
 	return (score);
 }
 
-uint32_t	get_score(struct s_map *map, struct s_map *piece, uint32_t pos[2],
+uint32_t	get_score(struct s_map *map, struct s_map *piece, int32_t pos[2],
 		char player_char)
 {
-	uint32_t	x;
-	uint32_t	y;
+	int32_t		x;
+	int32_t		y;
 	uint32_t	score;
 	uint32_t	score2;
 
@@ -106,20 +104,20 @@ uint32_t	get_score(struct s_map *map, struct s_map *piece, uint32_t pos[2],
 
 void		play_turn(struct s_map *map, struct s_map *piece, char player_char)
 {
-	uint32_t		x;
-	uint32_t		y;
+	int32_t			x;
+	int32_t			y;
 	uint32_t		score;
 	struct s_move	best;
 
 	best.score = UINT32_MAX;
-	y = 0;
-	while (y < map->height - piece->height)
+	y = -piece->height;
+	while (y < map->height)
 	{
-		x = 0;
-		while (x < map->width - piece->width)
+		x = -piece->width;
+		while (x < map->width)
 		{
-			if (is_valid(map, piece, (uint32_t[2]){ x, y }, player_char))
-				if ((score = get_score(map, piece, (uint32_t[2]){ x, y },
+			if (is_valid(map, piece, (int32_t[2]){ x, y }, player_char))
+				if ((score = get_score(map, piece, (int32_t[2]){ x, y },
 						player_char)) < best.score)
 					best = (struct s_move) { x, y, score };
 			x++;
@@ -151,6 +149,8 @@ int			main(void)
 		piece = read_map(&stdin, true);
 		if (!map || !piece)
 		{
+			free(map);
+			free(piece);
 			ft_putf("Exit bye");
 			return (1);
 		}

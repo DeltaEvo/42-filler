@@ -6,7 +6,7 @@
 /*   By: dde-jesu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 12:44:55 by dde-jesu          #+#    #+#             */
-/*   Updated: 2019/01/24 13:42:08 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/01/31 17:47:19 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ struct s_map	*read_map(t_readable *stdin, bool piece)
 	y = 0;
 	while (y < height)
 		if (!((piece || (io_readnum(stdin) == y && io_expect(stdin, " ")))
-			&& io_read(stdin, map->data + y * width, width) >= 0
+			&& io_read(stdin, map->data + y * width, width) == width
 			&& io_expect(stdin, "\n")))
 			break ;
 		else

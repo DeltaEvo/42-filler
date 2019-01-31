@@ -6,7 +6,7 @@
 /*   By: dde-jesu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/24 12:52:41 by dde-jesu          #+#    #+#             */
-/*   Updated: 2019/01/24 13:05:57 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/01/31 17:34:57 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 # include <stdbool.h>
 
 struct			s_map {
-	uint32_t	height;
-	uint32_t	width;
+	int32_t		height;
+	int32_t		width;
 	char		data[];
 };
 
